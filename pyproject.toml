@@ -20,6 +20,11 @@ dependencies = [
   "tensorflow",
 ]
 
+[dependency-groups]
+dev = [
+  "pytest>=8.0",
+]
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["captchard*"]

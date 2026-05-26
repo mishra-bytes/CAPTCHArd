@@ -1,421 +1,79 @@
 # CAPTCHArd - NSUT CAPTCHA Solver
 
-A comprehensive computer vision solution for predicting NSUT-style 5-digit CAPTCHA images. This project combines robust image preprocessing, character segmentation, and CNN-based classification to achieve high-accuracy CAPTCHA solving.
+CAPTCHArd is a Python package for preprocessing and predicting NSUT-style 5-digit CAPTCHA images.
 
-## Features
+## Installation (uv-first)
 
-- **Live CAPTCHA Solving**: Fetch and solve CAPTCHAs from the NSUT IMS portal in real-time
-- **Installable Python Package**: Use as a library in your own projects via `captchard`
-- **Custom Model Training**: Train your own models with manual hyperparameter tuning or Bayesian optimization
-- **Flexible Input Support**: Accept images as file paths, bytes, or file-like streams
-- **Async API Support**: Async endpoints for integration with web frameworks
-
----
-
-## Table of Contents
-
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Project Structure](#project-structure)
-- [Public API Reference](#public-api-reference)
-- [Training Your Own Model](#training-your-own-model)
-- [Architecture](#architecture)
-- [Configuration](#configuration)
-- [Testing](#testing)
-- [Troubleshooting](#troubleshooting)
-- [Dependencies](#dependencies)
-- [License](#license)
-
----
-
-## Installation
-
-### Prerequisites
-
-- Python 3.10 or higher
-- pip or conda package manager
-
-### Install as Package (Recommended)
+Prerequisites:
+- Python 3.10+
+- `uv` (via `python -m uv` or installed globally)
 
 ```bash
-# Clone the repository
-git clone https://github.com/your-repo/NSUT_Captcha.git
-cd NSUT_Captcha
-
-# Install in development mode
-pip install -e .
+git clone https://github.com/mishra-bytes/CAPTCHArd.git
+cd CAPTCHArd
+python -m uv sync --group dev
 ```
 
-### Install Dependencies Only
-
-```bash
-pip install -r requirements.txt
-```
-
----
+This creates `.venv` and installs project + dev dependencies.
 
 ## Quick Start
 
-### 1. Basic Prediction (Python API)
-
 ```python
-import captchard as cpd
 import captchard.nsut as nsut
 
-# Load the pre-trained model explicitly
 model = nsut.load_model("model/final_captcha_model.h5")
-
-# Predict CAPTCHA from an image file
-result = nsut.predict("captchas/example.png", model=model)
-print(f"Predicted CAPTCHA: {result}")  # e.g., "12345"
-
-# Or let it auto-load the default model from config
-result = nsut.predict("captchas/example.png")
+result = nsut.predict_captcha("captchas/example.png", model=model)
+print(result)
 ```
 
-### 2. Process Different Input Types
+## Benchmark (Before uv vs After uv)
 
-```python
-import captchard.nsut as nsut
-from pathlib import Path
+Measured on this repo using `benchmark.ps1` on **2026-05-26 16:46:09 +05:30**:
 
-# From file path string
-result = predict_captcha("captchas/sample.png")
+- Before uv (pip editable install): **139.34s**
+- After uv (uv editable install): **35.90s**
+- Speedup: **3.88x**
 
-# From pathlib.Path
-result = predict_captcha(Path("captchas/sample.png"))
-
-# From raw bytes
-with open("captchas/sample.png", "rb") as f:
-    image_bytes = f.read()
-result = predict_captcha(image_bytes)
-
-# From file-like stream
-with open("captchas/sample.png", "rb") as f:
-    result = predict_captcha(f)
-```
-
-### 3. Segment CAPTCHA into Digits
-
-```python
-from captchard.nsut import segment_captcha
-
-# Get individual digit images (32x32 numpy arrays)
-digits = segment_captcha("captchas/example.png")
-print(f"Found {len(digits)} digit segments")
-```
-
-### 4. Launch Web Interface
+Benchmark command:
 
 ```bash
-# Run the Streamlit app
-streamlit run app.py
-
-# Or use the module directly
-python app.py
+powershell -ExecutionPolicy Bypass -File .\benchmark.ps1
 ```
 
----
-
-## Project Structure
-
-`	ext
-NSUT_Captcha/
-├── captchard/          # Main installable package
-│   ├── __init__.py     # Package entry point
-│   └── nsut/           # NSUT CAPTCHA Service namespace
-│       ├── __init__.py # NSUT-specific API exports
-│       ├── api/        # High-level prediction functions
-│       ├── adapters/   # IMS client & model loader
-│       ├── config/     # Centralized configuration
-│       ├── core/       # Preprocessing & segmentation logic
-│       ├── schemas/    # Data schemas/types
-│       ├── services/   # Inference/prediction routines
-│       └── utils/      # Logging & shared utilities
-│
-├── research/           # Exploration, notebooks & scripts
-│   ├── model_train.py  # Standalone training script
-│   ├── preprocess.py   # Experimental preprocessing scripts
-│   └── *.ipynb         # Jupyter experiment notebooks
-│
-├── model/              # Stored model weights
-│   └── final_captcha_model.h5  
-│
-├── pyproject.toml      # Package metadata (pip install .)
-└── requirements.txt    # Standard pip dependencies
-`
-
----
-
-## Public API Reference
-
-### Core Functions
-
-#### `load_model(model_path=None)`
-Load a trained TensorFlow model.
-
-```python
-from captchard.nsut import load_model
-
-# Load from specific path
-model = load_model("model/final_captcha_model.h5")
-
-# Load from default configured path
-model = load_model()
-```
-
-**Parameters:**
-- `model_path` (str | Path | None): Path to `.h5` model file. Uses default if omitted.
-
-**Returns:** Loaded Keras model instance
-
----
-
-#### `predict_captcha(image, model=None, model_path=None)`
-Predict the 5-digit CAPTCHA string from an image.
-
-```python
-from captchard.nsut import predict_captcha
-
-# With pre-loaded model
-result = predict_captcha("image.png", model=model)
-
-# Auto-load default model
-result = predict_captcha("image.png")
-
-# Specify custom model path
-result = predict_captcha("image.png", model_path="custom_model.h5")
-```
-
-**Parameters:**
-- `image`: File path (str), Path object, raw bytes, or file-like stream
-- `model`: Pre-loaded model (optional)
-- `model_path`: Path to model file (optional)
-
-**Returns:** String of predicted 5 digits (e.g., `"48291"`) or error message
-
----
-
-#### `segment_captcha(image)`
-Preprocess and segment a CAPTCHA into individual digit tiles.
-
-```python
-from captchard.nsut import segment_captcha
-
-digits = segment_captcha("captcha.png")
-# Returns list of 5 numpy arrays (32x32 each)
-```
-
-**Parameters:**
-- `image`: File path, Path object, raw bytes, or file-like stream
-
-**Returns:** List of digit images as numpy arrays
-
----
-
-### Async API (for Web Frameworks)
-
-```python
-from captchard.api.predict import predict_captcha_endpoint
-
-# Returns dict with prediction and latency
-result = await predict_captcha_endpoint("image.png", model=model)
-# {"prediction": "12345", "latency_ms": 15.3}
-```
-
----
-
-## Live Inference Mode
-- Fetch real CAPTCHAs from the NSUT IMS portal
-- View original and preprocessed images
-- See segmented digits
-- Get instant predictions with latency metrics
-
-### Training Studio
-- Upload custom dataset (ZIP of labeled CAPTCHA images)
-- Manual model design with customizable:
-  - Convolutional filters
-  - Dense units
-  - Dropout rate
-  - Learning rate
-  - Number of epochs
-- Bayesian hyperparameter optimization with real-time visualization
-- Training progress charts and accuracy metrics
-- Download trained models
-
-**Launch the interface:**
-```bash
-streamlit run app.py
-```
-
----
-
-## Training Your Own Model
-
-### Using the Training Studio (Recommended)
-
-1. Prepare a ZIP file with CAPTCHA images named as their labels (e.g., `12345.png`)
-2. Launch the Streamlit app: `streamlit run app.py`
-3. Select "Training Studio" mode
-4. Upload your dataset ZIP
-5. Choose manual training or Bayesian optimization
-6. Configure hyperparameters and train
-7. Download the trained model
-
-### Using the Standalone Script
-
-```python
-# Edit model_train.py configuration
-DATA_DIR = "path/to/your/preprocessed/captchas"
-EPOCHS = 20
-BATCH_SIZE = 32
-
-# Run training
-python model_train.py
-```
-
-### Dataset Format
-
-- Images should be PNG/JPG files
-- Filename = CAPTCHA label (e.g., `48291.png` for CAPTCHA showing "48291")
-- Only 5-digit numeric CAPTCHAs are supported
-
----
-
-## Architecture
-
-### Image Processing Pipeline
-
-1. **Load Image**: Grayscale conversion
-2. **Binarization**: Otsu's threshold with inverse binary
-3. **Noise Removal**: Morphological opening
-4. **Segmentation**: Contour detection and bounding box extraction
-5. **Digit Isolation**: Smart splitting for merged digits
-6. **Normalization**: Resize to 32x32 with padding
-
-### Model Architecture
-
-The CNN classifier for individual digits:
-
-```
-Conv2D(filters, 3x3, ReLU) → BatchNorm → MaxPool
-Conv2D(filters, 3x3, ReLU) → BatchNorm → MaxPool
-Flatten → Dense(units, ReLU) → Dropout → Dense(10, Softmax)
-```
-
-For full CAPTCHA recognition (CTC-based):
-
-```
-Conv2D → MaxPool → Conv2D → MaxPool → Reshape
-Dense → Bidirectional LSTM → Dense(Softmax) + CTC Loss
-```
-
----
-
-## Configuration
-
-Edit `captchard/config/settings.py`:
-
-```python
-# Paths
-MODEL_PATH = PROJECT_ROOT / "model" / "final_captcha_model.h5"
-TEMP_DATASET_DIR = PROJECT_ROOT / "temp_dataset"
-
-# IMS Portal URLs (for live CAPTCHA fetching)
-IMS_BASE_URL = "https://imsnsit.org/imsnsit/"
-IMS_LOGIN_URL = "https://www.imsnsit.org/imsnsit/student_login.php"
-
-# Tuner Settings
-TUNER_DIRECTORY = "my_dir"
-TUNER_PROJECT_NAME = "captcha_tuning_web"
-```
-
----
+Each benchmark run is appended to:
+- `research/uv_benchmark.log`
 
 ## Testing
 
-Run the test suite:
-
 ```bash
-# Run all tests
-python -m pytest tests/
-
-# Run with verbose output
-python -m pytest tests/ -v
-
-# Run specific test file
-python -m pytest tests/test_public_api.py
+python -m uv run pytest tests/
+python -m uv run pytest tests/ -v
+python -m uv run pytest tests/test_public_api.py
 ```
-
----
 
 ## Troubleshooting
 
-### `Error: Model not loaded`
-- Verify the model file exists at the specified path
-- Check that the path in settings.py is correct
-- Ensure TensorFlow is properly installed
+- `Error: Model not loaded`: verify `model/final_captcha_model.h5` exists.
+- `Error: Segmentation Failed`: image may not segment into 5 digit regions.
+- Import/runtime issues: re-sync the environment.
 
-### `Error: Segmentation Failed`
-- The image didn't segment into exactly 5 digit regions
-- Check image quality and format
-- Try preprocessing the image manually first
-
-### Import errors (OpenCV/TensorFlow)
 ```bash
-# Reinstall dependencies
-pip install --force-reinstall tensorflow opencv-python-headless
+python -m uv sync --group dev --reinstall
 ```
 
-### CAPTCHA fetch fails
-- Check internet connection
-- The IMS portal may be temporarily unavailable
-- Session cookies may have expired (retry)
+## Project Structure
 
----
-
-## Dependencies
-
-| Package | Purpose |
-|---------|---------|
-| tensorflow | Deep learning framework |
-| opencv-python-headless | Image processing |
-| numpy | Numerical operations |
-| streamlit | Web interface |
-| keras-tuner | Hyperparameter optimization |
-| beautifulsoup4 | HTML parsing for CAPTCHA fetching |
-| requests | HTTP client |
-| scikit-learn | Data splitting, metrics |
-| matplotlib, seaborn, plotly | Visualization |
-
-Install all:
-```bash
-pip install -r requirements.txt
+```text
+NSUT_Captcha/
+|- captchard/              # Installable package
+|  \- nsut/                # NSUT prediction modules
+|- model/                  # Model files
+|- tests/                  # Test suite
+|- pyproject.toml          # Project metadata and dependencies
+|- uv.lock                 # Locked dependency graph (generated by uv)
+\- benchmark.ps1           # pip vs uv benchmark script
 ```
-
----
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
----
-
-## Acknowledgments
-
-- TensorFlow and Keras teams for the deep learning framework
-- OpenCV for computer vision utilities
-- Streamlit for the interactive web framework
-- NSUT for the CAPTCHA challenge inspiration
+MIT. See [LICENSE](LICENSE).

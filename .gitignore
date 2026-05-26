@@ -48,3 +48,11 @@ checkpoints/
 
 # Streamlit configs
 .streamlit/
+
+# Local benchmark artifacts
+benchmark.ps1
+research/uv_benchmark.log
+
+# Local alternate virtual environments
+venv_pip/
+venv_uv/
