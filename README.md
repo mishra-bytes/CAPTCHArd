@@ -5,7 +5,7 @@ A comprehensive computer vision solution for predicting NSUT-style 5-digit CAPTC
 ## Features
 
 - **Live CAPTCHA Solving**: Fetch and solve CAPTCHAs from the NSUT IMS portal in real-time
-- **Installable Python Package**: Use as a library in your own projects via `captcha_predictor`
+- **Installable Python Package**: Use as a library in your own projects via `captchard`
 - **Streamlit Web Interface**: User-friendly UI for inference and model training
 - **Custom Model Training**: Train your own models with manual hyperparameter tuning or Bayesian optimization
 - **Flexible Input Support**: Accept images as file paths, bytes, or file-like streams
@@ -61,23 +61,24 @@ pip install -r requirements.txt
 ### 1. Basic Prediction (Python API)
 
 ```python
-from captcha_predictor import load_model, predict_captcha, segment_captcha
+import captchard as cpd
+import captchard.nsut as nsut
 
-# Load the pre-trained model
-model = load_model("model/final_captcha_model.h5")
+# Load the pre-trained model explicitly
+model = nsut.load_model("model/final_captcha_model.h5")
 
 # Predict CAPTCHA from an image file
-result = predict_captcha("captchas/example.png", model=model)
+result = nsut.predict("captchas/example.png", model=model)
 print(f"Predicted CAPTCHA: {result}")  # e.g., "12345"
 
-# Or let it auto-load the default model
-result = predict_captcha("captchas/example.png")
+# Or let it auto-load the default model from config
+result = nsut.predict("captchas/example.png")
 ```
 
 ### 2. Process Different Input Types
 
 ```python
-from captcha_predictor import predict_captcha, segment_captcha
+import captchard.nsut as nsut
 from pathlib import Path
 
 # From file path string
@@ -99,7 +100,7 @@ with open("captchas/sample.png", "rb") as f:
 ### 3. Segment CAPTCHA into Digits
 
 ```python
-from captcha_predictor import segment_captcha
+from captchard.nsut import segment_captcha
 
 # Get individual digit images (32x32 numpy arrays)
 digits = segment_captcha("captchas/example.png")
@@ -122,7 +123,7 @@ python app.py
 
 ```
 NSUT_Captcha/
-├── captcha_predictor/          # Main installable package
+├── captchard/          # Main installable package
 │   ├── __init__.py             # Public API exports
 │   ├── api/
 │   │   └── predict.py          # High-level prediction functions
@@ -186,7 +187,7 @@ NSUT_Captcha/
 Load a trained TensorFlow model.
 
 ```python
-from captcha_predictor import load_model
+from captchard.nsut import load_model
 
 # Load from specific path
 model = load_model("model/final_captcha_model.h5")
@@ -206,7 +207,7 @@ model = load_model()
 Predict the 5-digit CAPTCHA string from an image.
 
 ```python
-from captcha_predictor import predict_captcha
+from captchard.nsut import predict_captcha
 
 # With pre-loaded model
 result = predict_captcha("image.png", model=model)
@@ -231,7 +232,7 @@ result = predict_captcha("image.png", model_path="custom_model.h5")
 Preprocess and segment a CAPTCHA into individual digit tiles.
 
 ```python
-from captcha_predictor import segment_captcha
+from captchard.nsut import segment_captcha
 
 digits = segment_captcha("captcha.png")
 # Returns list of 5 numpy arrays (32x32 each)
@@ -247,7 +248,7 @@ digits = segment_captcha("captcha.png")
 ### Async API (for Web Frameworks)
 
 ```python
-from captcha_predictor.api.predict import predict_captcha_endpoint
+from captchard.api.predict import predict_captcha_endpoint
 
 # Returns dict with prediction and latency
 result = await predict_captcha_endpoint("image.png", model=model)
@@ -349,7 +350,7 @@ Dense → Bidirectional LSTM → Dense(Softmax) + CTC Loss
 
 ## Configuration
 
-Edit `captcha_predictor/config/settings.py`:
+Edit `captchard/config/settings.py`:
 
 ```python
 # Paths

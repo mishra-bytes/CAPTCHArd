@@ -3,9 +3,9 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "captcha_predictor"
+name = "captchard"
 version = "0.1.0"
-description = "CAPTCHA prediction package for NSUT-style 5-digit captchas."
+description = "CAPTCHArd: A modular, robust CAPTCHA prediction service (currently supporting NSUT-style captchas)."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -29,5 +29,5 @@ dependencies = [
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["captcha_predictor*"]
+include = ["captchard*"]
 
