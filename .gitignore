@@ -56,4 +56,10 @@ research/uv_benchmark.log
 # Local alternate virtual environments
 venv_pip/
 venv_uv/
+
+# Local/dev-only workspace files
+.devcontainer/
+packages.txt
+quick_test.py
+research/
 research/**
