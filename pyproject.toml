@@ -17,9 +17,7 @@ dependencies = [
   "numpy",
   "opencv-python-headless",
   "requests",
-  "scikit-learn",
   "tensorflow",
-  "tqdm",
 ]
 
 [tool.setuptools.packages.find]
