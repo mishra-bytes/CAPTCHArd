@@ -1,2 +1,0 @@
-"""NSUT Captcha package."""
-
