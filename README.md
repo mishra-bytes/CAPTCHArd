@@ -121,61 +121,37 @@ python app.py
 
 ## Project Structure
 
-```
+`	ext
 NSUT_Captcha/
 ├── captchard/          # Main installable package
-│   ├── __init__.py             # Public API exports
-│   ├── api/
-│   │   └── predict.py          # High-level prediction functions
-│   ├── adapters/
-│   │   ├── ims_captcha_client.py   # Fetches CAPTCHAs from IMS portal
-│   │   └── model_loader.py     # Model loading utilities
-│   ├── config/
-│   │   └── settings.py         # Centralized configuration
-│   ├── core/
-│   │   └── vision.py           # Image preprocessing & segmentation
-│   ├── schemas/
-│   │   └── inference.py        # Data schemas/types
-│   ├── services/
-│   │   ├── dataset_service.py  # Dataset loading/processing
-│   │   ├── inference_service.py# Inference pipeline
-│   │   ├── predict_service.py  # Prediction service layer
-│   │   └── training_utils.py   # Model builders & training callbacks
-│   └── utils/
-│       └── logging.py          # Logging configuration
+│   ├── __init__.py     # Package entry point
+│   └── nsut/           # NSUT CAPTCHA Service namespace
+│       ├── __init__.py # NSUT-specific API exports
+│       ├── api/        # High-level prediction functions
+│       ├── adapters/   # IMS client & model loader
+│       ├── config/     # Centralized configuration
+│       ├── core/       # Preprocessing & segmentation logic
+│       ├── schemas/    # Data schemas/types
+│       ├── services/   # Inference/prediction routines
+│       └── utils/      # Logging & shared utilities
 │
-├── nsut_captcha/               # Streamlit app package
-│   ├── app/
-│   │   └── main.py             # App entry point
-│   ├── ui/
-│   │   └── streamlit_app.py    # Streamlit interface
-│   ├── adapters/               # Shared adapters
-│   ├── core/                   # Core vision functions
-│   ├── services/               # Training & dataset services
-│   └── config/                 # App configuration
+├── demo_app/           # Interactive Web Interface (Streamlit)
+│   ├── app.py          # Main Streamlit launch file
+│   ├── app/            # Launch controllers
+│   ├── assets/         # CSS/images for web app
+│   └── ui/             # Streamlit frontend views
 │
-├── model/
-│   └── final_captcha_model.h5  # Pre-trained model weights
+├── research/           # Exploration, notebooks & scripts
+│   ├── model_train.py  # Standalone training script
+│   ├── preprocess.py   # Experimental preprocessing scripts
+│   └── *.ipynb         # Jupyter experiment notebooks
 │
-├── assets/
-│   └── style.css               # UI styling
+├── model/              # Stored model weights
+│   └── final_captcha_model.h5  
 │
-├── tests/
-│   └── test_public_api.py      # Package tests
-│
-├── captchas/                   # Sample CAPTCHA images
-├── Preprocessed/               # Preprocessed training data
-├── temp_dataset/               # Temporary dataset storage
-│
-├── app.py                      # Main application entry
-├── model_train.py              # Standalone training script
-├── preprocess.py               # Image preprocessing utilities
-├── backend.py                  # Backend imports
-├── pyproject.toml              # Package metadata
-├── requirements.txt            # Dependencies
-└── docs/
-    └── USAGE.md                # Detailed usage guide
-```
+├── pyproject.toml      # Package metadata (pip install .)
+└── requirements.txt    # Standard pip dependencies
+`
 
 ---
 
