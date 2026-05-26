@@ -12,7 +12,7 @@ python -m uv sync --group dev
 from captchard.nsut import load_model, predict_captcha
 
 model = load_model("model/final_captcha_model.h5")
-result = predict_captcha("captchas/example.png", model=model)
+result = predict_captcha("examples/example_1.jpg", model=model)
 print(result)
 ```
 

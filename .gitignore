@@ -25,6 +25,10 @@ Processed_Techniques/
 *.png
 *.jpg
 *.jpeg
+!examples/
+!examples/*.png
+!examples/*.jpg
+!examples/*.jpeg
 
 # ML / Training logs
 my_dir/
@@ -63,3 +67,4 @@ packages.txt
 quick_test.py
 research/
 research/**
+developer_checklist.md
