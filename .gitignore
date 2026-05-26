@@ -56,3 +56,4 @@ research/uv_benchmark.log
 # Local alternate virtual environments
 venv_pip/
 venv_uv/
+research/**
