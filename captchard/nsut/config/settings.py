@@ -6,7 +6,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(".")
 ASSETS_DIR = PROJECT_ROOT / "assets"
 MODEL_DIR = PROJECT_ROOT / "model"
-MODEL_FILE_NAME = "final_captcha_model.h5"
+MODEL_FILE_NAME = "nsut.h5"
 MODEL_PATH = MODEL_DIR / MODEL_FILE_NAME
 
 TEMP_DATASET_DIR = PROJECT_ROOT / "temp_dataset"

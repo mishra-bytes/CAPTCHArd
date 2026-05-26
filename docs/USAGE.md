@@ -4,6 +4,7 @@
 
 ```bash
 python -m uv sync --group dev
+python -m uv run python scripts/download_model.py --tag v1.0
 ```
 
 ## Quick Example
@@ -11,7 +12,7 @@ python -m uv sync --group dev
 ```python
 from captchard.nsut import load_model, predict_captcha
 
-model = load_model("model/final_captcha_model.h5")
+model = load_model("model/nsut.h5")
 result = predict_captcha("examples/example_1.jpg", model=model)
 print(result)
 ```

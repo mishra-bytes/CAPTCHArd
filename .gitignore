@@ -35,10 +35,10 @@ my_dir/
 logs/
 checkpoints/
 
-# Ignore all model files except the final one
+# Ignore model weight artifacts; keep only directory placeholder
 *.h5
 *.keras
-!model/final_captcha_model.h5
+!model/.gitkeep
 
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
