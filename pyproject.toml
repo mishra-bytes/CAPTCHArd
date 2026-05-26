@@ -14,15 +14,10 @@ authors = [
 ]
 dependencies = [
   "beautifulsoup4",
-  "keras-tuner",
-  "matplotlib",
   "numpy",
   "opencv-python-headless",
-  "plotly",
   "requests",
   "scikit-learn",
-  "seaborn",
-  "streamlit",
   "tensorflow",
   "tqdm",
 ]

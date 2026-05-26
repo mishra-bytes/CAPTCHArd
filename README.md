@@ -6,7 +6,6 @@ A comprehensive computer vision solution for predicting NSUT-style 5-digit CAPTC
 
 - **Live CAPTCHA Solving**: Fetch and solve CAPTCHAs from the NSUT IMS portal in real-time
 - **Installable Python Package**: Use as a library in your own projects via `captchard`
-- **Streamlit Web Interface**: User-friendly UI for inference and model training
 - **Custom Model Training**: Train your own models with manual hyperparameter tuning or Bayesian optimization
 - **Flexible Input Support**: Accept images as file paths, bytes, or file-like streams
 - **Async API Support**: Async endpoints for integration with web frameworks
@@ -19,7 +18,6 @@ A comprehensive computer vision solution for predicting NSUT-style 5-digit CAPTC
 - [Quick Start](#quick-start)
 - [Project Structure](#project-structure)
 - [Public API Reference](#public-api-reference)
-- [Web Interface](#web-interface)
 - [Training Your Own Model](#training-your-own-model)
 - [Architecture](#architecture)
 - [Configuration](#configuration)
@@ -135,12 +133,6 @@ NSUT_Captcha/
 │       ├── services/   # Inference/prediction routines
 │       └── utils/      # Logging & shared utilities
 │
-├── demo_app/           # Interactive Web Interface (Streamlit)
-│   ├── app.py          # Main Streamlit launch file
-│   ├── app/            # Launch controllers
-│   ├── assets/         # CSS/images for web app
-│   └── ui/             # Streamlit frontend views
-│
 ├── research/           # Exploration, notebooks & scripts
 │   ├── model_train.py  # Standalone training script
 │   ├── preprocess.py   # Experimental preprocessing scripts
@@ -233,11 +225,7 @@ result = await predict_captcha_endpoint("image.png", model=model)
 
 ---
 
-## Web Interface
-
-The Streamlit web interface provides two modes:
-
-### Live Inference Mode
+## Live Inference Mode
 - Fetch real CAPTCHAs from the NSUT IMS portal
 - View original and preprocessed images
 - See segmented digits

@@ -1,12 +1,7 @@
-streamlit
-tensorflow
+﻿tensorflow
 opencv-python-headless
 numpy
-matplotlib
 requests
 beautifulsoup4
-keras-tuner
 scikit-learn
-seaborn
-plotly
 tqdm
